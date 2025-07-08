@@ -1,103 +1,70 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { quotes } from "@/data/quotes";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [topic, setTopic] = useState("");
+  const [matchedQuotes, setMatchedQuotes] = useState<string[]>([]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const found = quotes.find(
+      (item) => item.topic.toLowerCase() === topic.toLowerCase()
+    );
+
+    if (found) {
+      setMatchedQuotes(found.quotes);
+    } else {
+      setMatchedQuotes(["No quotes found for this topic."]);
+    }
+  };
+
+  const popularTopics = quotes.map((q) => q.topic);
+
+  return (
+    <main className="grid min-h-screen place-items-center bg-gradient-to-br from-indigo-900 via-purple-700 to-pink-600 p-4">
+      <div className="bg-white/30 backdrop-blur-lg shadow-2xl rounded-3xl p-8 md:p-12 max-w-2xl w-full space-y-8 border border-purple-300">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-center text-purple-700">✨ Quote Generator ✨</h1>
+        <p className="text-center text-gray-600 text-lg">
+          Enter a topic to get inspiring quotes instantly!
+        </p>
+        <form onSubmit={handleSubmit} className="flex flex-col md:flex-row items-center gap-4">
+          <Input
+            type="text"
+            placeholder="Type a topic e.g. life, motivation, love..."
+            value={topic}
+            onChange={(e) => setTopic(e.target.value)}
+            className="flex-grow border-purple-300 focus:ring-2 focus:ring-purple-200"
+          />
+          <Button type="submit" className="w-full md:w-auto bg-purple-600 hover:bg-purple-700 text-white shadow-lg">Get Quotes</Button>
+        </form>
+
+        <div className="flex flex-wrap gap-2 justify-center">
+          <p className="w-full text-center text-sm text-gray-500">💡 Try these topics:</p>
+          {popularTopics.map((t, index) => (
+            <button
+              key={index}
+              className="px-3 py-1 text-sm rounded-full border border-purple-300 text-purple-600 hover:bg-purple-50 transition"
+              onClick={() => setTopic(t)}
+              type="button"
+            >
+              {t}
+            </button>
+          ))}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        <div className="space-y-3">
+          {matchedQuotes.map((quote, index) => (
+            <div key={index} className="bg-purple-50 border border-purple-200 p-4 rounded-xl shadow-sm text-gray-800 text-lg">
+              “{quote}”
+            </div>
+          ))}
+        </div>
+      </div>
+    </main>
   );
 }
